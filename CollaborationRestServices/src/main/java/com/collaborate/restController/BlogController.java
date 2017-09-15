@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -21,7 +22,7 @@ public class BlogController
 {
 	@Autowired
 	BlogDAO blogDAO;
-	
+	                                                                             
 	//=========method for getting all blogs=================================
 	@GetMapping(value="/getAllBlogs")
 	public ResponseEntity<List<Blog>>getAllBlogs()		//<List<Blog>>=list of blogs will be send
@@ -49,10 +50,52 @@ public class BlogController
 		}
 	}
 	
-	//====================method for 
+	//====================method for approved blogs============================
+	@GetMapping(value="/approveBlog/{blogId}")
+	public ResponseEntity<String>approveBlog(@PathVariable("blogId") int blogId)
+	{
+		Blog blog=blogDAO.getBlog(blogId);
+		if(blogDAO.approveBlog(blog))
+		{
+			return new ResponseEntity<String>("approved blogs successfully", HttpStatus.OK);
+		}
+		else
+		{
+			return new ResponseEntity<String>("problem in approving blogs", HttpStatus.NOT_ACCEPTABLE);
+		}
+		
+	}
+	
+	//=============method for update blogs==================================
+		@GetMapping(value="/updateBlog/{blogid}")
+		public ResponseEntity<String>updateBlog(@PathVariable("blogid")int blogId)
+		{
+			if(blogDAO.editBlog(blogId))
+			{
+				return new ResponseEntity<String>("blog updated successfully", HttpStatus.OK);
+			}
+			else
+			{
+				return new ResponseEntity<String>("problem in updating blogs", HttpStatus.NOT_ACCEPTABLE);
+			}
+		}
+		
 	
 	
-	
+	//=======================method for delete blog============================
+	@GetMapping(value="/deleteBlog/{blogid}")
+	public ResponseEntity<String>deleteBlog(@PathVariable("blogid") int blogId)
+	{
+		if(blogDAO.deleteBlog(blogId))
+		{
+			return new ResponseEntity<String>("blog deleted successfully", HttpStatus.OK);
+		}
+		else
+		{
+			return new ResponseEntity<String>("problem in deleting blogs", HttpStatus.NOT_ACCEPTABLE);
+		}
+	}
+		
 	
 	//=============This method is to check that whether controller runs properly or not(to test controller)
 	@GetMapping(value="/test")
