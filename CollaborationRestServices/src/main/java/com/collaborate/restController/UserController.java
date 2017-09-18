@@ -40,6 +40,14 @@ public class UserController
 		
 	}
 	
+	//=============method for getting user by userid=====================
+	@GetMapping(value="/getUserById/{userid}")
+	public ResponseEntity<Users>getUserById(@PathVariable("userid")String userId)
+	{
+		Users users=usersDAO.getUsers(userId);
+		return new ResponseEntity<Users>(users, HttpStatus.OK);
+	}
+	
 	//================method for getting list of all users================
 	@GetMapping(value="/getAllUsers")
 	public ResponseEntity<List<Users>>getAllUsers()
@@ -62,15 +70,25 @@ public class UserController
 		{
 			return new ResponseEntity<String>("Problem in approving user", HttpStatus.NOT_ACCEPTABLE);
 		}
-		
-		
 	}
+	
+	//==============method for getting list of approve users=============================
+	@GetMapping(value="/getAllApproveUsers")
+	public ResponseEntity<List<Users>>getAllApproveUsers()
+	{
+		ArrayList<Users>listUsers=new ArrayList<Users>();
+		listUsers=(ArrayList<Users>) usersDAO.getApproveUsers();
+		return new ResponseEntity<List<Users>>(listUsers,HttpStatus.OK);
+	}
+	
 	//==============methods for updating user=================
 	@GetMapping(value="/updateUsers/{userid}")
 	public ResponseEntity<String>updateUsers(@PathVariable("userid")String userId)
 	{
+		System.out.println(userId);
 		if(usersDAO.updateUsers(userId))
 		{
+			
 			return new ResponseEntity<String>("Update user successfully", HttpStatus.OK);
 		}
 		else

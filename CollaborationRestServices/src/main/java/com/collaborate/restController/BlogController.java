@@ -17,21 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.collaborate.DAO.BlogDAO;
 import com.collaborate.model.Blog;
 
+
 @RestController
 public class BlogController 
 {
 	@Autowired
 	BlogDAO blogDAO;
 	                                                                             
-	//=========method for getting all blogs=================================
-	@GetMapping(value="/getAllBlogs")
-	public ResponseEntity<List<Blog>>getAllBlogs()		//<List<Blog>>=list of blogs will be send
-	{
-		ArrayList<Blog>listBlogs=new ArrayList<Blog>();
-		listBlogs=(ArrayList<Blog>)blogDAO.getBlog();		//to call getBlog() method
-		return new ResponseEntity<List<Blog>>(listBlogs,HttpStatus.OK);
-	}
-	
 	//==============method for creating blocks===========================================
 	@PostMapping(value="/createBlogs")
 	public ResponseEntity<String>createBlogs(@RequestBody Blog blog)
@@ -50,7 +42,33 @@ public class BlogController
 		}
 	}
 	
-	//====================method for approved blogs============================
+	//=============method for geeting blog by blogid=====================
+	@GetMapping(value="/getBlogById/{blogid}")
+	public ResponseEntity<Blog>getBlogById(@PathVariable("blogid")int blogId)
+	{
+		Blog blog=blogDAO.getBlog(blogId);
+		return new ResponseEntity<Blog>(blog,HttpStatus.OK);
+	}
+	
+	//=========method for getting all blogs=================================
+		@GetMapping(value="/getAllBlogs")
+		public ResponseEntity<List<Blog>>getAllBlogs()		//<List<Blog>>=list of blogs will be send
+		{
+			ArrayList<Blog>listBlogs=new ArrayList<Blog>();
+			listBlogs=(ArrayList<Blog>)blogDAO.getBlog();		//to call getBlog() method
+			return new ResponseEntity<List<Blog>>(listBlogs,HttpStatus.OK);
+		}
+		
+	//===========method for getting list of all approve blogs====================
+		@GetMapping(value="/getAllApproveBlogs")
+		public ResponseEntity<List<Blog>>getAllApproveBlogs()
+		{
+			ArrayList<Blog>listBlogs=new ArrayList<Blog>();
+			listBlogs=(ArrayList<Blog>)blogDAO.getApproveBlog();				//to call getBlog() method
+			return new ResponseEntity<List<Blog>>(listBlogs,HttpStatus.OK);
+		}
+	
+	//====================method for approve blog============================
 	@GetMapping(value="/approveBlog/{blogId}")
 	public ResponseEntity<String>approveBlog(@PathVariable("blogId") int blogId)
 	{
@@ -66,11 +84,11 @@ public class BlogController
 		
 	}
 	
-	//=============method for update blogs==================================
+	//=============method for update blog==================================
 		@GetMapping(value="/updateBlog/{blogid}")
 		public ResponseEntity<String>updateBlog(@PathVariable("blogid")int blogId)
 		{
-			if(blogDAO.editBlog(blogId))
+			if(blogDAO.updateBlog(blogId))
 			{
 				return new ResponseEntity<String>("blog updated successfully", HttpStatus.OK);
 			}
@@ -80,8 +98,6 @@ public class BlogController
 			}
 		}
 		
-	
-	
 	//=======================method for delete blog============================
 	@GetMapping(value="/deleteBlog/{blogid}")
 	public ResponseEntity<String>deleteBlog(@PathVariable("blogid") int blogId)
@@ -97,7 +113,7 @@ public class BlogController
 	}
 		
 	
-	//=============This method is to check that whether controller runs properly or not(to test controller)
+	//=============This method is to check that whether controller runs properly or not(to test controller)===========
 	@GetMapping(value="/test")
 	public ResponseEntity<String>testMethod()
 	{

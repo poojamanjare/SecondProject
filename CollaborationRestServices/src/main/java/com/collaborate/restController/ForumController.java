@@ -22,7 +22,7 @@ public class ForumController
 	@Autowired
 	ForumDAO forumDAO;
 	
-	//=============creating Forum===================
+	//====================creating Forum===================
 	@PostMapping(value="/createForum")
 	public ResponseEntity<String>createForum(@RequestBody Forum forum)
 	{
@@ -38,6 +38,14 @@ public class ForumController
 			return new ResponseEntity<String>("Problem in creating forum", HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
+	
+	//===============method for getting forum by forumid========================
+	@GetMapping(value="/getForumById/{forumid}")
+	public ResponseEntity<Forum>getForumById(@PathVariable("forumid")int forumId)
+	{
+		Forum forum=forumDAO.getForum(forumId);
+		return new ResponseEntity<Forum>(forum, HttpStatus.OK);
+	}
 
 	//===============method for getting list of all forum=========================
 	@GetMapping(value="/getAllForum")
@@ -47,6 +55,7 @@ public class ForumController
 		listForum=(ArrayList<Forum>) forumDAO.getForum();
 		return new ResponseEntity<List<Forum>>(listForum,HttpStatus.OK);
 	}
+	
 	//================method for approved forum===============================
 	@GetMapping(value="/approveForum/{forumid}")
 	public ResponseEntity<String>approveForum(@PathVariable("forumid")int forumId)
@@ -62,7 +71,16 @@ public class ForumController
 		}
 	}
 	
-	//========method for updating forum===================
+	//================method for getting list of approve forum=================
+	@GetMapping(value="/getAllApproveForum")
+	public ResponseEntity<List<Forum>>getAllApproveForum()
+	{
+		ArrayList<Forum>listForum=new ArrayList<Forum>();
+		listForum=(ArrayList<Forum>) forumDAO.getApproveForum();
+		return new ResponseEntity<List<Forum>>(listForum,HttpStatus.OK);
+	}
+	
+	//====================method for updating forum=============================
 	@GetMapping(value="/updateForum/{forumid}")
 	public ResponseEntity<String>updateForum(@PathVariable("forumid")int forumId)
 	{
@@ -76,7 +94,7 @@ public class ForumController
 		}
 	}
 	
-	//==============method for delete forum=================================
+	//===========================method for delete forum=================================
 	@GetMapping(value="/deleteForum/{forumid}")
 	public ResponseEntity<String>deleteForum(@PathVariable("forumid")int forumId)
 	{
